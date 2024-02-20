@@ -1,3 +1,17 @@
+test_that("SRU", {
+  expect_equal(
+    .ndl_search(params = list(isbn = "978-4-297-13236-1"), end_point = "SRU")$url,
+    "https://ndlsearch.ndl.go.jp/api/sru?operation=searchRetrieve&version=1.2&query=isbn%3D978-4-297-13236-1"
+  )
+  expect_equal(
+    .ndl_search(params = list(isbn = "978-4-297-13236-1"), end_point = "SRU"),
+    .ndl_search(isbn = "978-4-297-13236-1", end_point = "SRU")
+  )
+  expect_equal(
+    .ndl_search(params = list(isbn = "978-4-297-13236-1", dpid = "iss-ndl-opac-national"), end_point = "SRU")$url,
+    "https://ndlsearch.ndl.go.jp/api/sru?operation=searchRetrieve&version=1.2&query=isbn%3D978-4-297-13236-1%20AND%20dpid%3Diss-ndl-opac-national"
+  )
+})
 test_that("OpenSearch", {
   expect_equal(
     .ndl_search(params = list(creator = "夏目漱石")),

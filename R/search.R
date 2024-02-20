@@ -35,17 +35,40 @@ ndl_search <- function(params = NULL, end_point = "OpenSearch", ...) {
   req <-
     httr2::request(base_url) |>
     httr2::req_url_path_append(end_points[[end_point]])
+
   if (!is.null(params)) {
     params <-
       params |>
       purrr::list_assign(...)
+    if (end_point == "SRU") {
+      params <-
+        .sru_param_modify(params)
+    }
     req <-
       req |>
       httr2::req_url_query(!!!params)
   } else {
-    req <-
-      req |>
-      httr2::req_url_query(...)
+    if (end_point == "SRU") {
+      params <-
+        list(...)
+      params <-
+        .sru_param_modify(params)
+      req <-
+        req |>
+        httr2::req_url_query(!!!params)
+    } else {
+      req <-
+        req |>
+        httr2::req_url_query(...)
+    }
   }
   req
+}
+
+.sru_param_modify <- function(params) {
+  list(
+      operation = "searchRetrieve",
+      version = "1.2",
+      query = paste(names(params), params, sep = "=", collapse = " AND ")
+    )
 }
